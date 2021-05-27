@@ -94,7 +94,6 @@ int input(){
  *@return :
  */
 void init(int n){
-    printf("%d",n);
     srand(time(0));
     if (n > MAXPROCESS)err_sys("Line39:the number of process overflow:");
     while(n){
@@ -130,7 +129,7 @@ void insertsort(Queueptr q,struct PCB pro){
                 j++;
             }
 
-            q->ready[(q->rear -j)%MAXSIZE] = q->ready[(q->rear - j - 1)%MAXSIZE];
+            q->ready[(q->rear -j)%MAXSIZE] = pro;
             q->rear = (q->rear + 1)%MAXSIZE;
             return;
         }
@@ -141,7 +140,7 @@ void insertsort(Queueptr q,struct PCB pro){
 }
 
 
-void delete(Queueptr q,int n){
+void Delete(Queueptr q,int n){
     printf("sss \n");
     if((q->front+n+1)%MAXSIZE == q->rear){q->rear = (q->rear - 1)%MAXSIZE; return;}
     while((q->front + n + 1)%MAXSIZE != q->rear){
@@ -155,7 +154,7 @@ void delete(Queueptr q,int n){
 
 
 
-void time_rotation(Queueptr q){
+void time_rotation(Queueptr q,int n){
 // 时间片轮转
     for (int i = 1; i <= n; i++){
         Push(q,PCBarr[i]);
@@ -171,7 +170,7 @@ void time_rotation(Queueptr q){
             
             q->ready[(q->front + i)%MAXSIZE].cpuTime -= TIMESLICE;
 
-            if(q->ready[(q->front + i)%MAXSIZE].cpuTime == 0){ delete(q,i%MAXSIZE); sleep(1); continue;}
+            if(q->ready[(q->front + i)%MAXSIZE].cpuTime == 0){ Delete(q,i%MAXSIZE); sleep(1); continue;}
               
             sleep(1);
             i++;
@@ -179,7 +178,7 @@ void time_rotation(Queueptr q){
     }
 }
 
-void priority_schedule(Queueptr q){
+void priority_schedule(Queueptr q,int n){
 // 优先级调度
     /**
      *@brief : 每次调度时间为1， 调度完后，进程优先级+3，插入到就绪队列
@@ -221,6 +220,6 @@ int main(){
     int flag;
     printf("选择调度算法： 1 时间片轮转  0 优先级调度 \n");
     scanf("%d",&flag);
-    if(flag)time_rotation(q);
-    else priority_schedule(q);
+    if(flag)time_rotation(q,n);
+    else priority_schedule(q,n);
 }
